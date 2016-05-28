@@ -11,18 +11,21 @@ object WordCount {
 
   def main(args: Array[String]) {
     val conf = new SparkConf().setMaster("local[2]").setAppName("NetworkWordCount")
-    val ssc = new StreamingContext(conf, Seconds(1))
+    val ssc = new StreamingContext(conf, Seconds(3))
 
     val lines = ssc.socketTextStream("localhost", 8818)
 
-    val words = lines.flatMap(_.split(" "))
+    val words = lines.map(line => {
+      println("-----------------" + line)
+      line.trim
+    })flatMap(_.split(" "))
     // Count each word in each batch
     val pairs = words.map(word => (word, 1))
     val wordCounts = pairs.reduceByKey(_ + _)
 
     // Print the first ten elements of each RDD generated in this DStream to the console
     wordCounts.filter(t2 => {
-      t2._2>5
+      t2._2>1
     }).foreachRDD((rdd, time) => {
       val list = rdd.collect()
       if(list.size > 0) {
