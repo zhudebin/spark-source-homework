@@ -75,8 +75,7 @@ object No1 {
     val Xones = DenseMatrix.horzcat(DenseMatrix.ones[Double](rows,
       1), X)
     val wMatrix = DenseMatrix(w)
-    val temp = (Xones *
-      wMatrix.t).asInstanceOf[DenseMatrix[Double]]
+    val temp = (Xones * wMatrix.t)
     val Ypred = (1.0 / (exp(temp * -1.0) + 1.0)).toDenseVector
     // 计算 RMSE
     val Ytrue = dataMatrix(::, -1)
